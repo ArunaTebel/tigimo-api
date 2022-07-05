@@ -57,3 +57,5 @@ startDatabase().then(async () => {
         console.log('listening on port 3001');
     });
 });
+
+module.exports = app;
