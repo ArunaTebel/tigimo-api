@@ -6,8 +6,8 @@ const morgan = require('morgan');
 const {expressjwt: jwt} = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const config = require('config');
-const {startDatabase} = require('./database/mongo');
-const {insertPosting, getPostings, updatePosting, deletePosting} = require('./database/postings');
+const {startDatabase} = require('./src/database/mongo');
+const {insertPosting, getPostings, updatePosting, deletePosting} = require('./src/database/postings');
 
 const app = express();
 
