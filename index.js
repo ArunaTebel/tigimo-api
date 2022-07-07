@@ -17,7 +17,7 @@ app.use(cors());
 app.use(morgan('combined'));
 
 const auth0Config = config.get('auth0');
-
+console.log(auth0Config);
 const checkJwt = jwt({
     secret: jwksRsa.expressJwtSecret({
         cache: true,
