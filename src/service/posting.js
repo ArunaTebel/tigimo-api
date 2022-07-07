@@ -31,6 +31,19 @@ async function updatePosting(id, posting) {
     return postings;
 }
 
+async function getPosting(id) {
+    const database = await getDatabase();
+    try {
+        return await database.collection(collectionName).findOne(
+            {_id: new ObjectID(id),}
+        );
+    } catch (e) {
+        return {}
+    } finally {
+        await closeDatabase();
+    }
+}
+
 async function deletePosting(id) {
     const database = await getDatabase();
     const postings = await database.collection(collectionName).deleteOne({
@@ -43,6 +56,7 @@ async function deletePosting(id) {
 module.exports = {
     insertPosting,
     getPostings,
+    getPosting,
     updatePosting,
     deletePosting,
 };

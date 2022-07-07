@@ -1,5 +1,5 @@
 const express = require('express')
-const {getPostings, insertPosting, deletePosting, updatePosting} = require("../service/posting");
+const {getPostings, insertPosting, deletePosting, updatePosting, getPosting} = require("../service/posting");
 const {checkJwt} = require("../util/auth");
 const router = express.Router();
 
@@ -10,6 +10,10 @@ router.get(`/postings`, async (req, res) => {
 router.post('/postings', checkJwt, async (req, res) => {
     await insertPosting(req.body);
     res.send({message: 'New posting inserted.'});
+});
+
+router.get('/posting/:id', checkJwt, async (req, res) => {
+    res.send(await getPosting(req.params.id));
 });
 
 router.delete('/posting/:id', checkJwt, async (req, res) => {
