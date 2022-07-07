@@ -1,4 +1,4 @@
-const {getDatabase, closeDatabase} = require('./mongo');
+const {getDatabase, closeDatabase} = require('../util/db');
 const {ObjectID} = require('mongodb');
 
 const collectionName = 'postings';
