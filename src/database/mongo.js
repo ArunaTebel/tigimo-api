@@ -1,5 +1,5 @@
 const {MongoClient, ServerApiVersion} = require('mongodb');
-const config = require('config');
+const config = require('../../config/default.json');
 require('dotenv').config();
 
 const client = new MongoClient(

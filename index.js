@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const {expressjwt: jwt} = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const config = require('config');
+const config = require('./config/default.json');
 const {startDatabase} = require('./src/database/mongo');
 const {insertPosting, getPostings, updatePosting, deletePosting} = require('./src/database/postings');
 
@@ -16,8 +16,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('combined'));
 
-const auth0Config = config.get('auth0');
-console.log(auth0Config);
+const auth0Config = config.auth0;
 const checkJwt = jwt({
     secret: jwksRsa.expressJwtSecret({
         cache: true,
