@@ -26,7 +26,7 @@ const checkJwt = jwt({
     }),
 
     audience: auth0Config.api.audience,
-    issuer: auth0Config.domain,
+    issuer: auth0Config.issuer,
     algorithms: ['RS256']
 });
 

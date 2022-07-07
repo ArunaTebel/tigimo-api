@@ -5,6 +5,7 @@
   },
   "auth0": {
     "domain": "https://archeun.us.auth0.com",
+    "issuer": "https://archeun.us.auth0.com/",
     "api": {
       "audience": "https://archeun-tigimo/api"
     }
