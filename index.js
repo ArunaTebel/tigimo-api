@@ -14,7 +14,12 @@ app.use(cors());
 app.use(morgan('combined'));
 
 app.use('/api', api)
-
+app.use((err, req, res, next) => {
+    res.status(err.code).send({
+        success: false,
+        message: err.message
+    })
+})
 startDatabase().then(async () => {
     app.listen(3001, async () => {
         console.log('listening on port 3001');

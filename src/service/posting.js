@@ -3,18 +3,25 @@ const {ObjectID} = require('mongodb');
 
 const collectionName = 'postings';
 
-async function insertPosting(posting) {
-    const database = await getDatabase();
-    const {insertedId} = await database.collection(collectionName).insertOne(posting);
-    await closeDatabase();
-    return insertedId;
-}
-
 async function getPostings() {
     const database = await getDatabase();
     const postings = await database.collection(collectionName).find({}).toArray();
     await closeDatabase();
     return postings;
+}
+
+async function getPostingsByUserId(userId) {
+    const database = await getDatabase();
+    const postings = await database.collection(collectionName).find({userId: userId}).toArray();
+    await closeDatabase();
+    return postings;
+}
+
+async function insertPosting(postingData) {
+    const database = await getDatabase();
+    const {insertedId} = await database.collection(collectionName).insertOne(postingData);
+    await closeDatabase();
+    return insertedId;
 }
 
 async function updatePosting(id, posting) {
@@ -59,4 +66,5 @@ module.exports = {
     getPosting,
     updatePosting,
     deletePosting,
+    getPostingsByUserId,
 };
