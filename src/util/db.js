@@ -1,44 +1,17 @@
-const {MongoClient, ServerApiVersion} = require('mongodb');
+const mongoose = require('mongoose')
 const config = require('../../config.json');
-require('dotenv').config();
 
-const client = new MongoClient(
-    getConnectionUri(),
-    {useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1}
-);
-
-let db = null;
-
-function getConnectionUri() {
-    return config.db.uri
-        .replace('<username>', process.env.DB_USER)
-        .replace('<password>', process.env.DB_PASS)
-        .replace('<cluster>', process.env.DB_CLUSTER);
-}
-
-async function startDatabase() {
+async function connectToDb() {
     try {
-        await client.connect();
-        return client.db('tigimo');
+        await mongoose.connect(
+            config.db.uri
+                .replace('<username>', process.env.DB_USER)
+                .replace('<password>', process.env.DB_PASS)
+                .replace('<cluster>', process.env.DB_CLUSTER)
+        );
     } catch (e) {
-        console.log(`Failed to start db. Error is: ${e}`)
+        console.log(e)
     }
 }
 
-async function closeDatabase() {
-    await client.close();
-    db = null;
-}
-
-async function getDatabase() {
-    if (!db) {
-        db = await startDatabase();
-    }
-    return db;
-}
-
-module.exports = {
-    startDatabase,
-    getDatabase,
-    closeDatabase,
-};
+module.exports = {connectToDb}

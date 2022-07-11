@@ -1,30 +1,43 @@
-const {getDatabase, closeDatabase} = require('../util/db');
+const {User} = require("../util/schema");
 
-const collectionName = 'users';
-
+/**
+ * Creates a new user using the provided data.
+ *
+ * @param user
+ * @returns {Promise}
+ */
 async function createAccount(user) {
-    const database = await getDatabase();
-    const existingUser = await database.collection(collectionName).findOne(
-        {sub: user.sub,}
-    );
+    const existingUser = await User
+        .findOne({uid: user.sub})
+        .exec();
     if (existingUser && existingUser.sub === user.sub) {
         throw new Error('A user account already exists for this user');
     }
-    const {insertedId} = await database.collection(collectionName).insertOne(user);
-    await closeDatabase();
-    return insertedId;
+
+    return await (new User({
+        ...user,
+        uid: user.sub,
+        first_name: user.given_name,
+        last_name: user.family_name,
+        full_name: user.name,
+        nick_name: user.nickname,
+        created_at: new Date(),
+    })).save();
 }
 
-async function getUserByAuthSub(authSub) {
-    const database = await getDatabase();
-    const user = await database.collection(collectionName).findOne(
-        {sub: authSub,}
-    );
-    await closeDatabase();
-    return user;
+/**
+ * Returns the user having the given uid
+ *
+ * @param uid
+ * @returns {Promise}
+ */
+async function getUserByUid(uid) {
+    return await User
+        .findOne({uid: uid})
+        .exec();
 }
 
 module.exports = {
     createAccount,
-    getUserByAuthSub
+    getUserByUid
 };

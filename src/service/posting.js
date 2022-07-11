@@ -1,7 +1,4 @@
-const {getDatabase, closeDatabase} = require('../util/db');
-const {ObjectID} = require('mongodb');
-
-const collectionName = 'postings';
+const {Posting} = require("../util/schema");
 
 /**
  * Returns all the Postings
@@ -9,11 +6,9 @@ const collectionName = 'postings';
  * @returns {Promise}
  */
 async function getPostings() {
-    const database = await getDatabase();
-    return database
-        .collection(collectionName)
-        .find({})
-        .toArray();
+    return await Posting
+        .find()
+        .exec();
 }
 
 /**
@@ -23,11 +18,9 @@ async function getPostings() {
  * @returns {Promise<*>}
  */
 async function getPostingsByUserId(userId) {
-    const database = await getDatabase();
-    return database
-        .collection(collectionName)
-        .find({userId: userId})
-        .toArray();
+    return await Posting
+        .find({"user._id": userId})
+        .exec();
 }
 
 /**
@@ -38,11 +31,9 @@ async function getPostingsByUserId(userId) {
  * @returns {Promise<*>}
  */
 async function insertPosting(postingData) {
-    const database = await getDatabase();
-    const {insertedId} = await database
-        .collection(collectionName)
-        .insertOne(postingData);
-    return insertedId;
+    const posting = new Posting(postingData);
+    await posting.save()
+    return posting
 }
 
 /**
@@ -53,17 +44,10 @@ async function insertPosting(postingData) {
  * @returns {Promise<*>}
  */
 async function updatePosting(id, posting) {
-    const database = await getDatabase();
-    return database
-        .collection(collectionName)
-        .updateOne(
-            {_id: new ObjectID(id),},
-            {
-                $set: {
-                    ...posting,
-                },
-            },
-        );
+    return Posting.findOneAndUpdate(
+        {_id: id},
+        {...posting, updated_at: new Date()}, {new: true}
+    );
 }
 
 /**
@@ -73,16 +57,7 @@ async function updatePosting(id, posting) {
  * @returns {Promise<{}|*>}
  */
 async function getPosting(id) {
-    const database = await getDatabase();
-    try {
-        return database
-            .collection(collectionName)
-            .findOne(
-                {_id: new ObjectID(id),}
-            );
-    } catch (e) {
-        return {}
-    }
+    return Posting.findOne({_id: id});
 }
 
 /**
@@ -92,12 +67,7 @@ async function getPosting(id) {
  * @returns {Promise<*>}
  */
 async function deletePosting(id) {
-    const database = await getDatabase();
-    return database
-        .collection(collectionName)
-        .deleteOne({
-            _id: new ObjectID(id),
-        });
+    return Posting.findOneAndDelete({_id: id});
 }
 
 module.exports = {

@@ -21,16 +21,32 @@ const ownPostingAuthMiddleware = [
 
 router.get(
     `/postings`,
-    async (req, res) => {
-        res.send(await getPostings());
+    async (req, res, next) => {
+        try {
+            res.send(await getPostings());
+        } catch (e) {
+            handleApiError(
+                e,
+                'An error occurred while trying to get Postings',
+                next
+            )
+        }
     }
 );
 
 router.get(
     `/postings/my`,
     coreAuthMiddleware,
-    async (req, res) => {
-        res.send(await getPostingsByUserId(req.currentUser._id));
+    async (req, res, next) => {
+        try {
+            res.send(await getPostingsByUserId(req.currentUser._id));
+        } catch (e) {
+            handleApiError(
+                e,
+                'An error occurred while trying to get my Postings',
+                next
+            )
+        }
     }
 );
 
@@ -39,31 +55,41 @@ router.post(
     coreAuthMiddleware,
     async (req, res, next) => {
         try {
-            const postingId = await insertPosting({
+            const posting = await insertPosting({
                 ...req.body,
-                userId: req.currentUser._id,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                user: req.currentUser,
+                created_at: new Date(),
+                updated_at: new Date()
             });
             res.send({
                 success: true,
                 data: {
-                    postingId: postingId
+                    posting: posting
                 }
             });
         } catch (e) {
-            e.code = 500
-            e.message = 'An error occurred while trying to create the Posting'
-            next(e)
+            handleApiError(
+                e,
+                'An error occurred while trying to create the Posting',
+                next
+            )
         }
     }
 );
 
 router.get(
     '/posting/:id',
-    auth.checkJwt,
-    async (req, res) => {
-        res.send(await getPosting(req.params.id));
+    [auth.checkJwt, service.postingExists],
+    async (req, res, next) => {
+        try {
+            res.send(await getPosting(req.params.id));
+        } catch (e) {
+            handleApiError(
+                e,
+                'An error occurred while trying to find the Posting',
+                next
+            )
+        }
     }
 );
 
@@ -77,9 +103,11 @@ router.delete(
                 message: 'Posting removed.'
             });
         } catch (e) {
-            e.code = 500
-            e.message = 'An error occurred while trying to delete the Posting'
-            next(e)
+            handleApiError(
+                e,
+                'An error occurred while trying to delete the Posting',
+                next
+            )
         }
     }
 );
@@ -89,19 +117,29 @@ router.put(
     ownPostingAuthMiddleware,
     async (req, res, next) => {
         try {
-            await updatePosting(
+            const posting = await updatePosting(
                 req.params.id,
                 {...req.body, updatedAt: new Date()}
             );
             res.send({
-                message: 'Posting updated.'
+                message: 'Posting updated.',
+                data: {posting}
             });
         } catch (e) {
-            e.code = 500
-            e.message = 'An error occurred while trying to update the Posting'
-            next(e)
+            handleApiError(
+                e,
+                'An error occurred while trying to update the Posting',
+                next
+            )
         }
     }
 );
+
+function handleApiError(e, message, next, code = 500) {
+    e.code = code
+    e.originalMessage = e.message
+    e.message = message
+    next(e)
+}
 
 module.exports = router

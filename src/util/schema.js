@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
-
-const {Schema, Model} = mongoose;
+const mongoose = require('mongoose')
+const {Schema} = mongoose;
 
 const ChannelSchema = new Schema({
     name: String,
     description: String,
+    created_at: {type: Date, default: Date.now},
+    updated_at: {type: Date, default: Date.now},
 });
 
 const UserSchema = new Schema({
@@ -16,6 +17,8 @@ const UserSchema = new Schema({
     picture: String,
     email: String,
     email_verified: Boolean,
+    created_at: {type: Date, default: Date.now},
+    updated_at: {type: Date, default: Date.now},
     channels: [ChannelSchema]
 });
 
@@ -27,11 +30,13 @@ const PostingSchema = new Schema({
     updated_at: {type: Date, default: Date.now},
     user: UserSchema,
     channel: ChannelSchema,
-    meta: {favorites: Number},
+    meta: {favorites: {type: Number, default: 0}},
 });
 
-const Channel = new Model('Blog', ChannelSchema);
-const User = new Model('Blog', UserSchema);
-const Posting = new Model('Blog', PostingSchema);
+ChannelSchema.add({owner: UserSchema});
+
+const Channel = mongoose.model('Channel', ChannelSchema);
+const User = mongoose.model('User', UserSchema);
+const Posting = mongoose.model('Posting', PostingSchema);
 
 module.exports = {Channel, User, Posting}
