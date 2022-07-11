@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const {Schema} = mongoose;
+const {Schema, Model} = mongoose;
 
 const ChannelSchema = new Schema({
     name: String,
@@ -29,3 +29,9 @@ const PostingSchema = new Schema({
     channel: ChannelSchema,
     meta: {favorites: Number},
 });
+
+const Channel = new Model('Blog', ChannelSchema);
+const User = new Model('Blog', UserSchema);
+const Posting = new Model('Blog', PostingSchema);
+
+module.exports = {Channel, User, Posting}
