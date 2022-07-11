@@ -4,8 +4,9 @@ require('dotenv').config();
 
 async function connectToDb() {
     try {
+        const dbUri = process.env.NODE_ENV === 'test' ? config.db.test.uri: config.db.prod.uri;
         await mongoose.connect(
-            config.db.uri
+            dbUri
                 .replace('<username>', process.env.DB_USER)
                 .replace('<password>', process.env.DB_PASS)
                 .replace('<cluster>', process.env.DB_CLUSTER)

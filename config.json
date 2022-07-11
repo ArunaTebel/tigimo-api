@@ -1,7 +1,14 @@
 {
   "db": {
-    "name": "tigimo",
-    "uri": "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/tigimo?retryWrites=true&w=majority"
+    "prod": {
+      "uri": "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/tigimo?retryWrites=true&w=majority"
+    },
+    "development": {
+      "uri": "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/tigimo?retryWrites=true&w=majority"
+    },
+    "test": {
+      "uri": "mongodb://localhost:27017/tigimo_test?retryWrites=true&w=majority"
+    }
   },
   "auth0": {
     "domain": "https://archeun.us.auth0.com",
