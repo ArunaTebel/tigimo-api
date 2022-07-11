@@ -3,6 +3,7 @@ const {expressjwt: jwt} = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
 const config = require("../../config.json");
 const {getPosting} = require("../service/posting");
+const {getChannel} = require("../service/channel");
 const auth0Config = config.auth0;
 
 const core = {
@@ -34,28 +35,56 @@ const auth = {
 }
 
 const service = {
-    postingExists: async (req, res, next) => {
-        const posting = await getPosting(req.params.id)
-        if (!posting || !posting._id) {
-            const error = new Error('No posting found by the given id')
-            error.code = 404
-            next(error)
-        } else {
-            next()
+    posting: {
+        exists: async (req, res, next) => {
+            const posting = await getPosting(req.params.id)
+            if (!posting || !posting._id) {
+                const error = new Error('No posting found by the given id')
+                error.code = 404
+                next(error)
+            } else {
+                next()
+            }
+        },
+        iOwn: async (req, res, next) => {
+            const posting = await getPosting(req.params.id)
+            if (!posting || !posting._id) {
+                const error = new Error('No posting found by the given id')
+                error.code = 404
+                next(error)
+            } else if (posting.user._id.toString() !== req.currentUser._id.toString()) {
+                const error = new Error('You are not authorized to delete this Posting')
+                error.code = 401
+                next(error)
+            } else {
+                next()
+            }
         }
     },
-    isOwnPosting: async (req, res, next) => {
-        const posting = await getPosting(req.params.id)
-        if (!posting || !posting._id) {
-            const error = new Error('No posting found by the given id')
-            error.code = 404
-            next(error)
-        } else if (posting.user._id.toString() !== req.currentUser._id.toString()) {
-            const error = new Error('You are not authorized to delete this Posting')
-            error.code = 401
-            next(error)
-        } else {
-            next()
+    channel: {
+        exists: async (req, res, next) => {
+            const channel = await getChannel(req.params.id)
+            if (!channel || !channel._id) {
+                const error = new Error('No Channel found by the given id')
+                error.code = 404
+                next(error)
+            } else {
+                next()
+            }
+        },
+        iOwn: async (req, res, next) => {
+            const channel = await getChannel(req.params.id)
+            if (!channel || !channel._id) {
+                const error = new Error('No Channel found by the given id')
+                error.code = 404
+                next(error)
+            } else if (channel.owner._id.toString() !== req.currentUser._id.toString()) {
+                const error = new Error('You are not authorized to delete this Channel')
+                error.code = 401
+                next(error)
+            } else {
+                next()
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
 const express = require('express')
 const {
-    getPostings,
-    getPosting,
-    getPostingsByUserId,
-    insertPosting,
-    deletePosting,
-    updatePosting,
-} = require("../service/posting");
+    getChannels,
+    getChannel,
+    getChannelsByUserId,
+    insertChannel,
+    deleteChannel,
+    updateChannel,
+} = require("../service/channel");
 const {auth, service} = require("../util/middleware");
 const {handleApiError} = require("../util/apiUtils");
 const router = express.Router();
@@ -15,20 +15,20 @@ const coreAuthMiddleware = [
     auth.checkJwt,
     auth.initCurrentUserData
 ]
-const ownPostingAuthMiddleware = [
+const ownChannelAuthMiddleware = [
     ...coreAuthMiddleware,
-    service.posting.iOwn
+    service.channel.iOwn
 ]
 
 router.get(
-    `/postings`,
+    `/channels`,
     async (req, res, next) => {
         try {
-            res.send(await getPostings());
+            res.send(await getChannels());
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to get Postings',
+                'An error occurred while trying to get Channels',
                 next
             )
         }
@@ -36,15 +36,15 @@ router.get(
 );
 
 router.get(
-    `/postings/my`,
+    `/channels/my`,
     coreAuthMiddleware,
     async (req, res, next) => {
         try {
-            res.send(await getPostingsByUserId(req.currentUser._id));
+            res.send(await getChannelsByUserId(req.currentUser._id));
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to get my Postings',
+                'An error occurred while trying to get my Channels',
                 next
             )
         }
@@ -52,26 +52,26 @@ router.get(
 );
 
 router.post(
-    '/postings',
+    '/channels',
     coreAuthMiddleware,
     async (req, res, next) => {
         try {
-            const posting = await insertPosting({
+            const channel = await insertChannel({
                 ...req.body,
-                user: req.currentUser,
+                owner: req.currentUser,
                 created_at: new Date(),
                 updated_at: new Date()
             });
             res.send({
                 success: true,
                 data: {
-                    posting: posting
+                    channel: channel
                 }
             });
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to create the Posting',
+                'An error occurred while trying to create the Channel',
                 next
             )
         }
@@ -79,15 +79,15 @@ router.post(
 );
 
 router.get(
-    '/posting/:id',
-    [auth.checkJwt, service.posting.exists],
+    '/channel/:id',
+    [auth.checkJwt, service.channel.exists],
     async (req, res, next) => {
         try {
-            res.send(await getPosting(req.params.id));
+            res.send(await getChannel(req.params.id));
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to find the Posting',
+                'An error occurred while trying to find the Channel',
                 next
             )
         }
@@ -95,18 +95,18 @@ router.get(
 );
 
 router.delete(
-    '/posting/:id',
-    ownPostingAuthMiddleware,
+    '/channel/:id',
+    ownChannelAuthMiddleware,
     async (req, res, next) => {
         try {
-            await deletePosting(req.params.id);
+            await deleteChannel(req.params.id);
             res.send({
-                message: 'Posting removed.'
+                message: 'Channel removed.'
             });
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to delete the Posting',
+                'An error occurred while trying to delete the Channel',
                 next
             )
         }
@@ -114,22 +114,22 @@ router.delete(
 );
 
 router.put(
-    '/posting/:id',
-    ownPostingAuthMiddleware,
+    '/channel/:id',
+    ownChannelAuthMiddleware,
     async (req, res, next) => {
         try {
-            const posting = await updatePosting(
+            const channel = await updateChannel(
                 req.params.id,
-                {...req.body, updated_at: new Date()}
+                {...req.body, updated_t: new Date()}
             );
             res.send({
-                message: 'Posting updated.',
-                data: {posting}
+                message: 'Channel updated.',
+                data: {channel}
             });
         } catch (e) {
             handleApiError(
                 e,
-                'An error occurred while trying to update the Posting',
+                'An error occurred while trying to update the Channel',
                 next
             )
         }
