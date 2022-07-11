@@ -8,11 +8,11 @@ const auth0Config = config.auth0;
 
 const core = {
     apiErrorHandler: (err, req, res, next) => {
-        console.log(err)
-        res.status(err.code).send({
+        res.status(err.status).send({
             success: false,
             message: err.message
         })
+        next()
     }
 }
 const auth = {
