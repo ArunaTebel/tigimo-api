@@ -14,7 +14,15 @@ router.post('/users/me', auth.checkJwt, async (req, res) => {
         const user = userInfo.data;
         if (req.auth.sub === user.sub) {
             await createAccount(user);
-            res.send({message: 'New user account created.'});
+            res.send({
+                success: true,
+                message: 'New user account created.'
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'Authentication details mismatch.'
+            });
         }
     } catch (e) {
         res.status(400).send({error: e.message});

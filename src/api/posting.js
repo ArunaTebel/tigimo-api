@@ -22,6 +22,7 @@ const ownPostingAuthMiddleware = [
 
 router.get(
     `/postings`,
+    auth.checkJwt,
     async (req, res, next) => {
         try {
             res.send(await getPostings());
@@ -29,7 +30,8 @@ router.get(
             handleApiError(
                 e,
                 'An error occurred while trying to get Postings',
-                next
+                next,
+                e.code
             )
         }
     }

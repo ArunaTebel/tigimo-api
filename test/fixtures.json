@@ -1,0 +1,32 @@
+{
+  "Users": [
+    {
+      "uid": "62cc4c6398b678a1d2fd22bc",
+      "first_name": "Aruna",
+      "last_name": "Tebel",
+      "full_name": "Aruna Tebel",
+      "nick_name": "arunautebel",
+      "picture": "https://s.gravatar.com/avatar/7406a79062b186a4506ee78e354f8b84?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fti.png",
+      "email": "arunautebel@gmail.com",
+      "email_verified": true,
+      "created_at": "2022-07-11T16:14:27.029+00:00",
+      "updated_at": "2022-07-11T16:14:28.029+00:00",
+      "channels": []
+    },
+    {
+      "uid": "62cc4c6398b678a1d2fd22bd",
+      "first_name": "Kayla",
+      "last_name": "Abbye",
+      "full_name": "Kayla Abbey",
+      "nick_name": "kayla.abbey",
+      "picture": "https://lh3.googleusercontent.com/a-/AFdZucrligXflb4PbSmiK4AJ9CnRp746Gip-KdGvhwlmMg=s96-c",
+      "email": "kayla.abbey@gmail.com",
+      "email_verified": true,
+      "created_at": "2022-07-10T13:14:27.029+00:00",
+      "updated_at": "2022-07-10T13:14:28.029+00:00",
+      "channels": []
+    }
+  ],
+  "Channels": [],
+  "Postings": []
+}
