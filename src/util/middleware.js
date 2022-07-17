@@ -79,7 +79,7 @@ const service = {
                 error.code = 404
                 next(error)
             } else if (channel.owner._id.toString() !== req.currentUser._id.toString()) {
-                const error = new Error('You are not authorized to delete this Channel')
+                const error = new Error('Cannot perform this action since you are not the owner of this Channel')
                 error.code = 401
                 next(error)
             } else {
