@@ -12,9 +12,9 @@ const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(cors());
-if (process.env.NODE_ENV !== 'test') {
+// if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined'));
-}
+// }
 app.use('/api', api)
 app.use(core.apiErrorHandler)
 
@@ -24,6 +24,8 @@ connectToDb().then(async () => {
             console.log('listening on port 3001');
         }
     });
+}).catch((e) => {
+    console.log(e)
 });
 
 module.exports = app;

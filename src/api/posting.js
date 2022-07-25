@@ -3,12 +3,14 @@ const {
     getPostings,
     getPosting,
     getPostingsByUserId,
+    getPostingsByChannelId,
     insertPosting,
     deletePosting,
     updatePosting,
 } = require("../service/posting");
 const {auth, service} = require("../util/middleware");
 const {handleApiError} = require("../util/apiUtils");
+const {Types} = require("mongoose");
 const router = express.Router();
 
 const coreAuthMiddleware = [
@@ -53,14 +55,31 @@ router.get(
     }
 );
 
+router.get(
+    `/postings/channel/:channelId`,
+    coreAuthMiddleware,
+    async (req, res, next) => {
+        try {
+            res.send(await getPostingsByChannelId(req.params.channelId));
+        } catch (e) {
+            handleApiError(
+                e,
+                'An error occurred while trying to get Postings for the Channel',
+                next
+            )
+        }
+    }
+);
+
 router.post(
     '/postings',
     coreAuthMiddleware,
     async (req, res, next) => {
         try {
+            const channel = Types.ObjectId(req.body.channel)
             const posting = await insertPosting({
-                ...req.body,
-                user: req.currentUser,
+                ...{...req.body, channel},
+                user: req.currentUser._id,
                 created_at: new Date(),
                 updated_at: new Date()
             });

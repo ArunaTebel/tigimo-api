@@ -10,7 +10,7 @@ async function createAccount(user) {
     const existingUser = await User
         .findOne({uid: user.sub})
         .exec();
-    if (existingUser && existingUser.sub === user.sub) {
+    if (existingUser && existingUser.uid === user.sub) {
         throw new Error('A user account already exists for this user');
     }
 

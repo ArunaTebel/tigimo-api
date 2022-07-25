@@ -8,6 +8,8 @@ const {Posting} = require("../util/schema");
 async function getPostings() {
     return await Posting
         .find()
+        .populate('channel')
+        .populate('user')
         .exec();
 }
 
@@ -20,6 +22,20 @@ async function getPostings() {
 async function getPostingsByUserId(userId) {
     return await Posting
         .find({"user._id": userId})
+        .exec();
+}
+
+/**
+ * Returns the Postings created under the given channel
+ *
+ * @param channelId - id of the channel on which the Postings appear
+ * @returns {Promise<*>}
+ */
+async function getPostingsByChannelId(channelId) {
+    return await Posting
+        .find({"channel": channelId})
+        .populate('channel')
+        .populate('user')
         .exec();
 }
 
@@ -74,6 +90,7 @@ module.exports = {
     getPostings,
     getPosting,
     getPostingsByUserId,
+    getPostingsByChannelId,
     insertPosting,
     updatePosting,
     deletePosting,

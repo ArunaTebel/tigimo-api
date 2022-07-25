@@ -58,7 +58,7 @@ router.post(
         try {
             const channel = await insertChannel({
                 ...req.body,
-                owner: req.currentUser,
+                owner: req.currentUser._id,
                 created_at: new Date(),
                 updated_at: new Date()
             });
